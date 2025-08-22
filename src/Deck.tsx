@@ -16,7 +16,9 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [pitch, setPitch] = useState(1) // 0.92..1.08 for +/-8%
   const [bend, setBend] = useState(0) // temporary pitch bend applied when holding buttons
-  const [cueTime, setCueTime] = useState(0)
+  const [cueTime, setCueTime] = useState<number | null>(null)
+  const cueHoldRef = useRef(false)
+  const suppressNextClickRef = useRef(false)
 
   // Wire the audio graph for this deck
   useEffect(() => {
@@ -65,14 +67,44 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
     }
   }
 
-  const onCue = () => {
+  // Cue behavior similar to CDJs:
+  // - Click: set cue point at current position.
+  // - Hold: play from cue while held, release returns to cue and pauses.
+  const onCueClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (suppressNextClickRef.current) {
+      e.preventDefault()
+      return
+    }
     const el = audioRef.current
     if (!el) return
-    // Set cue or go to cue if set
-    if (Math.abs(el.currentTime - cueTime) > 0.05) {
-      setCueTime(el.currentTime)
-    } else {
+    setCueTime(el.currentTime)
+  }
+
+  const onCuePointerDown = async (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    const el = audioRef.current
+    if (!el || !audioCtx) return
+    if (audioCtx.state === 'suspended') await audioCtx.resume()
+    if (cueTime != null) {
       el.currentTime = cueTime
+      try {
+        await el.play()
+        setIsPlaying(true)
+      } catch {}
+      cueHoldRef.current = true
+      suppressNextClickRef.current = true
+      setTimeout(() => (suppressNextClickRef.current = false), 250)
+    }
+  }
+
+  const onCuePointerUp = () => {
+    const el = audioRef.current
+    if (!el) return
+    if (cueHoldRef.current) {
+      el.pause()
+      setIsPlaying(false)
+      if (cueTime != null) el.currentTime = cueTime
+      cueHoldRef.current = false
     }
   }
 
@@ -117,7 +149,14 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
 
       <div className="transport">
         <button onClick={onTogglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
-        <button onClick={onCue}>Cue</button>
+        <button
+          onClick={onCueClick}
+          onPointerDown={onCuePointerDown}
+          onPointerUp={onCuePointerUp}
+          onPointerLeave={onCuePointerUp}
+        >
+          Cue
+        </button>
       </div>
 
       <div className="pitch">

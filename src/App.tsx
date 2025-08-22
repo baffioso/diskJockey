@@ -58,22 +58,22 @@ export default function App() {
           outputNode={leftGainRef.current}
           onLevel={(v) => setLeftGain(v)}
         />
-        <div className="xfader">
-          <label>Crossfader</label>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.001}
-            value={xfader}
-            onChange={(e) => setXfader(parseFloat(e.target.value))}
-          />
-        </div>
         <Deck
           title="Deck B"
           audioCtx={audioCtx}
           outputNode={rightGainRef.current}
           onLevel={(v) => setRightGain(v)}
+        />
+      </div>
+      <div className="xfader">
+        <label>Crossfader</label>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.001}
+          value={xfader}
+          onChange={(e) => setXfader(parseFloat(e.target.value))}
         />
       </div>
       <footer>
