@@ -28,3 +28,12 @@ npm run build
 ```
 
 Open http://localhost:5173 in your browser.
+
+## Deploying to GitHub Pages
+
+This repo is configured with a GitHub Actions workflow that builds and deploys the `dist` folder to GitHub Pages whenever you push to `main`.
+
+- Repo Settings → Pages → Source: GitHub Actions
+- App base path is set to `/diskJockey/` in `vite.config.ts` for correct asset URLs.
+
+Manual run: go to the Actions tab → “Deploy to GitHub Pages” → Run workflow.
