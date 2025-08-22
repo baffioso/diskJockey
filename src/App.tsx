@@ -66,7 +66,7 @@ export default function App() {
         />
       </div>
       <div className="xfader">
-        <label>Crossfader</label>
+        <label>X-Fader</label>
         <input
           type="range"
           min={0}
