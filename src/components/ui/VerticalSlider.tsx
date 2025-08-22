@@ -29,12 +29,18 @@ export const VerticalSlider: React.FC<VerticalSliderProps> = ({
 }) => {
   const trackRef = useRef<HTMLDivElement | null>(null)
 
+  const lo = Math.min(min, max)
+  const hi = Math.max(min, max)
+  const range = hi - lo
+
   const pct = useMemo(() => {
-    const t = (value - min) / (max - min)
+    const t = (value - lo) / (range || 1)
     const clamped = clamp(t, 0, 1)
     // top=0 at top; we want min at bottom => invert
-    return 1 - clamped
-  }, [value, min, max])
+    const base = 1 - clamped
+    // If min>max, reverse orientation again (so UI flips)
+    return min > max ? 1 - base : base
+  }, [value, lo, range, min, max])
 
   const setFromPointer = useCallback(
     (clientY: number) => {
@@ -42,11 +48,15 @@ export const VerticalSlider: React.FC<VerticalSliderProps> = ({
       if (!el) return
       const rect = el.getBoundingClientRect()
       const ratio = clamp((clientY - rect.top) / rect.height, 0, 1)
-      const raw = min + (1 - ratio) * (max - min)
-      const snapped = snap(raw, step, min)
-      onChange(clamp(snapped, min, max))
+      // Map ratio to value, considering inverted visual axis and possibly reversed min/max
+      const visual = 1 - ratio
+      const t = min > max ? 1 - visual : visual
+      const raw = lo + t * range
+      const snapped = snap(raw, step, lo)
+      const finalVal = clamp(snapped, lo, hi)
+      onChange(finalVal)
     },
-    [min, max, step, onChange]
+    [min, max, lo, hi, range, step, onChange]
   )
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {

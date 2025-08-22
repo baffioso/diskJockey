@@ -224,8 +224,8 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
         })()}
         <div className="pitch-slider">
           <VerticalSlider
-            min={-8}
-            max={8}
+            min={8}
+            max={-8}
             step={0.1}
             value={(pitch - 1) * 100}
             onChange={(v) => setPitch(1 + v / 100)}
@@ -236,15 +236,6 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
 
       <div className="bend">
         <button
-          aria-label="Pitch Bend Plus"
-          onPointerDown={() => onBend(1)}
-          onPointerUp={onBendEnd}
-          onPointerLeave={onBendEnd}
-        >
-          <span className="bend-label">Pitch Bend</span>
-          <span className="big-sign plus">+</span>
-        </button>
-        <button
           aria-label="Pitch Bend Minus"
           onPointerDown={() => onBend(-1)}
           onPointerUp={onBendEnd}
@@ -252,6 +243,15 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
         >
           <span className="bend-label">Pitch Bend</span>
           <span className="big-sign minus">−</span>
+        </button>
+        <button
+          aria-label="Pitch Bend Plus"
+          onPointerDown={() => onBend(1)}
+          onPointerUp={onBendEnd}
+          onPointerLeave={onBendEnd}
+        >
+          <span className="bend-label">Pitch Bend</span>
+          <span className="big-sign plus">+</span>
         </button>
       </div>
     </div>
