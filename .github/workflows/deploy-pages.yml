@@ -17,6 +17,13 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Improve npm network resiliency on GitHub runners
+      NPM_CONFIG_FETCH_RETRIES: 5
+      NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: 20000
+      NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: 120000
+      NPM_CONFIG_AUDIT: false
+      NPM_CONFIG_FUND: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,8 +32,20 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - name: Install
-        run: npm ci
+      - name: Ensure npm registry
+        run: npm config set registry https://registry.npmjs.org/
+      - name: Install (with retries)
+        run: |
+          npm ci --no-audit --no-fund || {
+            echo 'Retry 1/3 after 5s'; sleep 5;
+            npm ci --no-audit --no-fund;
+          } || {
+            echo 'Retry 2/3 after 10s'; sleep 10;
+            npm ci --no-audit --no-fund;
+          } || {
+            echo 'Retry 3/3 after 15s'; sleep 15;
+            npm ci --no-audit --no-fund;
+          }
       - name: Build
         run: npm run build
       - name: Upload artifact
