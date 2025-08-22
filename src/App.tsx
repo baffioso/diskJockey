@@ -50,7 +50,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>DiskJockey</h1>
+      <h1 className="logo">DiskJockey</h1>
       <div className="mixer">
         <Deck
           title="Deck A"
