@@ -224,28 +224,24 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
 
       <audio ref={audioRef} controls={false} preload="auto" />
 
-      <div className="transport">
-        <button onClick={onTogglePlay} aria-label={isPlaying ? 'Pause' : 'Start'}>
-          {isPlaying ? (
-            // Pause icon
-            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
-              <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
-              <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
-            </svg>
-          ) : (
-            // Play (Start) icon
-            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
-              <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
-            </svg>
-          )}
+      <div className="bend">
+        <button
+          aria-label="Pitch Bend Minus"
+          onPointerDown={() => onBend(-1)}
+          onPointerUp={onBendEnd}
+          onPointerLeave={onBendEnd}
+        >
+          <span className="bend-label">Pitch Bend</span>
+          <span className="big-sign minus">−</span>
         </button>
         <button
-          onClick={onCueClick}
-          onPointerDown={onCuePointerDown}
-          onPointerUp={onCuePointerUp}
-          onPointerLeave={onCuePointerUp}
+          aria-label="Pitch Bend Plus"
+          onPointerDown={() => onBend(1)}
+          onPointerUp={onBendEnd}
+          onPointerLeave={onBendEnd}
         >
-          Cue
+          <span className="bend-label">Pitch Bend</span>
+          <span className="big-sign plus">+</span>
         </button>
       </div>
 
@@ -271,24 +267,28 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
         </div>
       </div>
 
-      <div className="bend">
-        <button
-          aria-label="Pitch Bend Minus"
-          onPointerDown={() => onBend(-1)}
-          onPointerUp={onBendEnd}
-          onPointerLeave={onBendEnd}
-        >
-          <span className="bend-label">Pitch Bend</span>
-          <span className="big-sign minus">−</span>
+      <div className="transport">
+        <button onClick={onTogglePlay} aria-label={isPlaying ? 'Pause' : 'Start'}>
+          {isPlaying ? (
+            // Pause icon
+            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+              <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+            </svg>
+          ) : (
+            // Play (Start) icon
+            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
+            </svg>
+          )}
         </button>
         <button
-          aria-label="Pitch Bend Plus"
-          onPointerDown={() => onBend(1)}
-          onPointerUp={onBendEnd}
-          onPointerLeave={onBendEnd}
+          onClick={onCueClick}
+          onPointerDown={onCuePointerDown}
+          onPointerUp={onCuePointerUp}
+          onPointerLeave={onCuePointerUp}
         >
-          <span className="bend-label">Pitch Bend</span>
-          <span className="big-sign plus">+</span>
+          Cue
         </button>
       </div>
     </div>
