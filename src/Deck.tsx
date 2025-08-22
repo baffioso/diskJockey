@@ -130,6 +130,7 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
           defaultValue={0}
           onChange={onPitchSlider}
           className="vertical"
+          {...({ orient: 'vertical' } as React.HTMLAttributes<HTMLInputElement>)}
         />
       </div>
 
