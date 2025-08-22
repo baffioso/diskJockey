@@ -75,7 +75,21 @@ button, input, select, textarea {
 .pitch .pitch-slider { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 
 /* Custom vertical slider (cross-browser) */
-.vslider { width: 44px; height: 100%; display: flex; align-items: center; justify-content: center; }
+.vslider { width: 56px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+.vslider::before, .vslider::after {
+  position: absolute;
+  right: 2px;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--muted);
+  text-shadow: 0 0 6px rgba(0,0,0,0.35);
+  pointer-events: none;
+  user-select: none;
+}
+/* Top label = minus, Bottom label = plus (DJ convention: up = slower/negative) placed on right side */
+.vslider::before { content: '−'; top: 4px; }
+.vslider::after  { content: '+'; bottom: 4px; }
 .vslider-track {
   position: relative;
   width: 10px;
