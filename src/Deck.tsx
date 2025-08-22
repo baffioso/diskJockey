@@ -186,6 +186,9 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
     }
   }, [])
 
+  const displayName = trackName ?? 'Please load track'
+  const hasTrack = !!trackName
+
   return (
     <div className="deck">
       <div className="deck-header">
@@ -210,14 +213,14 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
         />
       </div>
 
-      {trackName && (
-        <div className="track-display" title={trackName}>
-          <div className="scroll">
-            <span>{trackName}</span>
-            <span aria-hidden="true">&nbsp;&nbsp;•&nbsp;&nbsp;{trackName}</span>
-          </div>
+      <div className={`track-display ${hasTrack ? '' : 'no-scroll'}`} title={displayName}>
+        <div className="scroll">
+          <span>{displayName}</span>
+          {hasTrack && (
+            <span aria-hidden="true">&nbsp;&nbsp;•&nbsp;&nbsp;{displayName}</span>
+          )}
         </div>
-      )}
+      </div>
 
       <audio ref={audioRef} controls={false} preload="auto" />
 
