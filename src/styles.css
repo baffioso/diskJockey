@@ -26,6 +26,15 @@ button, input, select, textarea {
   font-family: inherit;
 }
 
+/* Prevent text selection when holding/tapping controls */
+button, .deck-header .load-btn, .transport, .bend {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
 .app { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; height: 100%; }
 .mixer { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; max-width: 1200px; flex: 1 1 auto; min-height: 0; align-items: stretch; margin-bottom: 1rem; }
 /* Let content consume space; X-Fader will sit at the end with margin */
