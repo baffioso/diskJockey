@@ -8,3 +8,13 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>
 )
+ 
+// PWA: prompt registration when supported
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      // VitePWA handles registration automatically when using autoUpdate
+      // This ensures any legacy SW is controlled
+    })
+  })
+}

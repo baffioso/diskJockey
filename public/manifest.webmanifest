@@ -1,0 +1,16 @@
+{
+  "name": "DiskJockey",
+  "short_name": "DiskJockey",
+  "description": "Simple client-side DJ app with two decks and a crossfader",
+  "theme_color": "#0a0b12",
+  "background_color": "#0a0b12",
+  "display": "standalone",
+  "start_url": "/diskJockey/",
+  "scope": "/diskJockey/",
+  "icons": [
+    { "src": "/diskJockey/pwa-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/diskJockey/pwa-512x512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/diskJockey/pwa-maskable-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/diskJockey/pwa-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
