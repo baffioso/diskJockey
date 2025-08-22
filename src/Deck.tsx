@@ -235,18 +235,22 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
 
       <div className="bend">
         <button
+          aria-label="Pitch Bend Plus"
           onPointerDown={() => onBend(1)}
           onPointerUp={onBendEnd}
           onPointerLeave={onBendEnd}
         >
-          Pitch Bend +
+          <span className="bend-label">Pitch Bend</span>
+          <span className="big-sign plus">+</span>
         </button>
         <button
+          aria-label="Pitch Bend Minus"
           onPointerDown={() => onBend(-1)}
           onPointerUp={onBendEnd}
           onPointerLeave={onBendEnd}
         >
-          Pitch Bend -
+          <span className="bend-label">Pitch Bend</span>
+          <span className="big-sign minus">−</span>
         </button>
       </div>
     </div>

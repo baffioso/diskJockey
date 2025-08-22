@@ -34,7 +34,7 @@ button, input, select, textarea {
 .deck-header { display: flex; align-items: center; gap: 0.75rem; }
 .deck-header h2 { flex: 0 0 auto; }
 .loader input[type="file"] { width: 100%; }
-.transport { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.transport { display: flex; gap: 0.75rem; flex-wrap: nowrap; width: 100%; }
 .transport button,
 .bend button {
   position: relative;
@@ -49,6 +49,7 @@ button, input, select, textarea {
   transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
   box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 6px 18px rgba(0,0,0,0.35);
 }
+.transport button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
 .transport button svg { display: block; }
 .transport button:hover,
 .bend button:hover {
@@ -76,6 +77,8 @@ button, input, select, textarea {
 }
 
 .bend { display: flex; gap: 0.75rem; justify-content: center; }
+.bend button { display: inline-flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.bend .bend-label { font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
 
 .xfader { background: var(--panel); padding: 1rem; border-radius: 14px; display: grid; gap: 0.75rem; align-content: center; box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.4); position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 50; width: min(100% - 2rem, 1200px); }
 .xfader input[type="range"] { width: 100%; height: 42px; background: transparent; }
@@ -219,32 +222,8 @@ footer { opacity: 0.7; font-size: 0.8rem; }
 }
 
 /* Pitch bend button styling (reuse button base, add icon-like arrows) */
-.bend button {
-  position: relative;
-  overflow: hidden;
-}
-.bend button:first-child::before,
-.bend button:last-child::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(180px 60px at 10% 50%, rgba(0,245,212,0.15), transparent),
-              radial-gradient(180px 60px at 90% 50%, rgba(123,44,255,0.15), transparent);
-  pointer-events: none;
-}
-.bend button:first-child::after { /* + arrow */
-  content: '+';
-  position: absolute;
-  right: 10px;
-  top: 50%; transform: translateY(-50%);
-  color: var(--accent);
-  font-weight: 800;
-}
-.bend button:last-child::after { /* - arrow */
-  content: '−';
-  position: absolute;
-  right: 10px;
-  top: 50%; transform: translateY(-50%);
-  color: var(--accent-2);
-  font-weight: 800;
-}
+.bend button { position: relative; overflow: hidden; }
+.bend button::before, .bend button::after { content: none; }
+.bend .big-sign { font-size: 1.6rem; line-height: 1; font-weight: 800; display: inline-block; min-width: 1ch; text-align: center; }
+.bend .big-sign.plus { color: var(--accent); }
+.bend .big-sign.minus { color: var(--accent-2); }
