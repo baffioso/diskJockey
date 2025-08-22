@@ -66,7 +66,8 @@ button, input, select, textarea {
   border-color: rgba(255,61,129,0.35);
 }
 
-.pitch { display: grid; grid-template-rows: auto 1fr; justify-items: center; align-items: stretch; flex: 1 1 auto; min-height: 0; }
+.pitch { display: grid; grid-template-rows: auto 1fr; justify-items: center; align-items: stretch; flex: 1 1 auto; min-height: 0; margin: 0.5rem 0.375rem; row-gap: 0.5rem; }
+.pitch label { display: block; margin-bottom: 0.25rem; }
 .pitch .pitch-readout { color: var(--accent); font-weight: 700; margin-left: 0.4rem; text-shadow: 0 0 10px rgba(0,245,212,0.3); }
 .pitch input.vertical {
   writing-mode: bt-lr;
