@@ -49,6 +49,7 @@ button, input, select, textarea {
   transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
   box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 6px 18px rgba(0,0,0,0.35);
 }
+.transport button svg { display: block; }
 .transport button:hover,
 .bend button:hover {
   box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 0 24px var(--glow);

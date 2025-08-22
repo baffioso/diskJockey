@@ -187,7 +187,20 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
       <audio ref={audioRef} controls={false} preload="auto" />
 
       <div className="transport">
-        <button onClick={onTogglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
+        <button onClick={onTogglePlay} aria-label={isPlaying ? 'Pause' : 'Start'}>
+          {isPlaying ? (
+            // Pause icon
+            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+              <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+            </svg>
+          ) : (
+            // Play (Start) icon
+            <svg width="22" height="22" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
+            </svg>
+          )}
+        </button>
         <button
           onClick={onCueClick}
           onPointerDown={onCuePointerDown}
