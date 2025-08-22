@@ -10,13 +10,16 @@ export type DeckProps = {
 // A simple file-based deck using an <audio> element + MediaElementAudioSourceNode
 export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const gainRef = useRef<GainNode | null>(null)
+  const objectUrlRef = useRef<string | null>(null)
 
   const [isPlaying, setIsPlaying] = useState(false)
   const [pitch, setPitch] = useState(1) // 0.92..1.08 for +/-8%
   const [bend, setBend] = useState(0) // temporary pitch bend applied when holding buttons
   const [cueTime, setCueTime] = useState<number | null>(null)
+  const [trackName, setTrackName] = useState<string | null>(null)
   const cueHoldRef = useRef(false)
   const suppressNextClickRef = useRef(false)
 
@@ -126,26 +129,62 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
     onLevel?.(gainRef.current?.gain.value ?? 1)
   }, [onLevel])
 
+  // Cleanup object URL on unmount
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current)
+        objectUrlRef.current = null
+      }
+    }
+  }, [])
+
   return (
     <div className="deck">
-      <h2>{title}</h2>
-      <div className="loader">
+      <div className="deck-header">
+        <button
+          className="load-btn"
+          onClick={() => fileInputRef.current?.click()}
+          aria-label="Load audio file"
+        >
+          Load
+        </button>
+        <h2>{title}</h2>
         <input
+          ref={fileInputRef}
           type="file"
           accept="audio/mp3,audio/mpeg"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
+            // Revoke previous URL to avoid memory leaks
+            if (objectUrlRef.current) {
+              URL.revokeObjectURL(objectUrlRef.current)
+              objectUrlRef.current = null
+            }
             const url = URL.createObjectURL(file)
+            objectUrlRef.current = url
             const el = audioRef.current
             if (!el) return
             el.src = url
             el.load()
             setIsPlaying(false)
+            setTrackName(file.name)
           }}
+          style={{ display: 'none' }}
         />
-        <audio ref={audioRef} controls={false} preload="auto" />
       </div>
+
+      {trackName && (
+        <div className="track-display" title={trackName}>
+          <div className="scroll">
+            <span>{trackName}</span>
+            <span aria-hidden="true">&nbsp;&nbsp;•&nbsp;&nbsp;{trackName}</span>
+          </div>
+        </div>
+      )}
+
+      <audio ref={audioRef} controls={false} preload="auto" />
 
       <div className="transport">
         <button onClick={onTogglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
@@ -160,7 +199,15 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
       </div>
 
       <div className="pitch">
-        <label>Pitch ±8%</label>
+        {(() => {
+          const pct = (Math.max(0.5, Math.min(4, pitch + bend)) - 1) * 100
+          const pctStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`
+          return (
+            <label>
+              Pitch <span className="pitch-readout">{pctStr}</span>
+            </label>
+          )
+        })()}
         <input
           type="range"
           min={-8}

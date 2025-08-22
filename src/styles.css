@@ -21,11 +21,13 @@ body {
   color: var(--text);
 }
 
-.app { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; }
-.mixer { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; max-width: 1200px; }
+.app { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; min-height: 100vh; padding-bottom: 7.5rem; }
+.mixer { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; max-width: 1200px; flex: 1 1 auto; min-height: 0; align-items: stretch; }
 
-.deck { background: var(--panel); padding: 1rem; border-radius: 14px; display: grid; gap: 0.75rem; box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.4); }
+.deck { background: var(--panel); padding: 1rem; border-radius: 14px; display: grid; gap: 0.75rem; box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.4); height: 100%; overflow: auto; }
 .deck h2 { margin: 0; font-size: 1.1rem; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+.deck-header { display: flex; align-items: center; gap: 0.75rem; }
+.deck-header h2 { flex: 0 0 auto; }
 .loader input[type="file"] { width: 100%; }
 .transport { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 .transport button,
@@ -58,6 +60,7 @@ body {
 }
 
 .pitch { display: grid; place-items: center; }
+.pitch .pitch-readout { color: var(--accent); font-weight: 700; margin-left: 0.4rem; text-shadow: 0 0 10px rgba(0,245,212,0.3); }
 .pitch input.vertical {
   writing-mode: bt-lr;
   appearance: slider-vertical;
@@ -68,7 +71,7 @@ body {
 
 .bend { display: flex; gap: 0.75rem; justify-content: center; }
 
-.xfader { background: var(--panel); padding: 1rem; border-radius: 14px; display: grid; gap: 0.75rem; align-content: center; width: 100%; max-width: 1200px; margin-top: 0.5rem; box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.4); }
+.xfader { background: var(--panel); padding: 1rem; border-radius: 14px; display: grid; gap: 0.75rem; align-content: center; box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(0,0,0,0.4); position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 50; width: min(100% - 2rem, 1200px); }
 .xfader input[type="range"] { width: 100%; height: 42px; background: transparent; }
 
 /* Range styling: WebKit (Chrome/Safari/Edge) */
@@ -151,21 +154,61 @@ footer { opacity: 0.7; font-size: 0.8rem; }
 }
 
 /* Browse files input */
-.loader input[type="file"]::-webkit-file-upload-button {
-  padding: 0.5rem 0.9rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: linear-gradient(135deg, rgba(123,44,255,0.25), rgba(0,245,212,0.12));
-  color: var(--text);
+.loader .load-btn,
+.deck-header .load-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,245,212,0.35);
+  background: linear-gradient(135deg, rgba(0,245,212,0.30), rgba(0,214,185,0.16)); /* aqua like pitch */
+  color: #fff;
   cursor: pointer;
+  min-height: 44px;
+  transition: transform 0.08s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 6px 18px rgba(0,0,0,0.35);
 }
-.loader input[type="file"]::file-selector-button { /* Firefox */
-  padding: 0.5rem 0.9rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: linear-gradient(135deg, rgba(123,44,255,0.25), rgba(0,245,212,0.12));
+.loader .load-btn:focus-visible,
+.deck-header .load-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,245,212,0.35), 0 0 0 6px rgba(0,245,212,0.15), 0 0 24px var(--glow);
+}
+.loader .load-btn:hover,
+.deck-header .load-btn:hover {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 24px var(--glow);
+}
+.loader .load-btn:active,
+.deck-header .load-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* Track name marquee under Load button */
+.track-display {
+  margin-top: 8px;
+  height: 22px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(0,255,255,0.25);
+  box-shadow: inset 0 0 6px rgba(0,255,255,0.15);
+}
+.track-display .scroll {
+  position: absolute;
+  display: inline-flex;
+  gap: 24px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee 12s linear infinite;
+}
+.track-display span {
   color: var(--text);
-  cursor: pointer;
+  font-size: 12px;
+  line-height: 22px;
+  padding: 0 8px;
+  text-shadow: 0 0 6px rgba(0,255,255,0.25);
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Pitch bend button styling (reuse button base, add icon-like arrows) */

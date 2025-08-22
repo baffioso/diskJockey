@@ -76,9 +76,6 @@ export default function App() {
           onChange={(e) => setXfader(parseFloat(e.target.value))}
         />
       </div>
-      <footer>
-        <small>Tip: Click anywhere to initialize audio. Load MP3s locally. Bandcamp streaming may require CORS and purchase/permissions.</small>
-      </footer>
     </div>
   )
 }
