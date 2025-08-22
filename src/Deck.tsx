@@ -224,27 +224,6 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
 
       <audio ref={audioRef} controls={false} preload="auto" />
 
-      <div className="bend">
-        <button
-          aria-label="Pitch Bend Minus"
-          onPointerDown={() => onBend(-1)}
-          onPointerUp={onBendEnd}
-          onPointerLeave={onBendEnd}
-        >
-          <span className="bend-label">Pitch Bend</span>
-          <span className="big-sign minus">−</span>
-        </button>
-        <button
-          aria-label="Pitch Bend Plus"
-          onPointerDown={() => onBend(1)}
-          onPointerUp={onBendEnd}
-          onPointerLeave={onBendEnd}
-        >
-          <span className="bend-label">Pitch Bend</span>
-          <span className="big-sign plus">+</span>
-        </button>
-      </div>
-
       <div className="pitch">
         {(() => {
           const pct = (Math.max(0.5, Math.min(4, pitch + bend)) - 1) * 100
@@ -255,19 +234,41 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
             </label>
           )
         })()}
-        <div className="pitch-slider">
-          <VerticalSlider
-            min={8}
-            max={-8}
-            step={0.1}
-            value={(pitch - 1) * 100}
-            onChange={(v) => setPitch(1 + v / 100)}
-            ariaLabel="Pitch"
-          />
+        <div className="pitch-controls">
+          <div className="pitch-slider">
+            <VerticalSlider
+              min={8}
+              max={-8}
+              step={0.1}
+              value={(pitch - 1) * 100}
+              onChange={(v) => setPitch(1 + v / 100)}
+              ariaLabel="Pitch"
+            />
+          </div>
+          <div className="pitch-bend-vert">
+            <button
+              aria-label="Pitch Bend Minus"
+              onPointerDown={() => onBend(-1)}
+              onPointerUp={onBendEnd}
+              onPointerLeave={onBendEnd}
+            >
+              <span className="bend-label">Pitch Bend</span>
+              <span className="big-sign minus">−</span>
+            </button>
+            <button
+              aria-label="Pitch Bend Plus"
+              onPointerDown={() => onBend(1)}
+              onPointerUp={onBendEnd}
+              onPointerLeave={onBendEnd}
+            >
+              <span className="bend-label">Pitch Bend</span>
+              <span className="big-sign plus">+</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="transport">
+  <div className="transport">
         <button onClick={onTogglePlay} aria-label={isPlaying ? 'Pause' : 'Start'}>
           {isPlaying ? (
             // Pause icon
