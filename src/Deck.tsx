@@ -24,6 +24,52 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
   const cueHoldRef = useRef(false)
   const suppressNextClickRef = useRef(false)
 
+  // Helper to load a File into the audio element
+  const loadFromFile = (file: File) => {
+    // Revoke previous URL to avoid memory leaks
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current)
+      objectUrlRef.current = null
+    }
+    const url = URL.createObjectURL(file)
+    objectUrlRef.current = url
+    const el = audioRef.current
+    if (!el) return
+    el.src = url
+    el.load()
+    setIsPlaying(false)
+    setTrackName(file.name)
+  }
+
+  // Broader file picker for Android/Chromium using File System Access API, with fallback
+  const openPicker = async () => {
+    try {
+      const anyWindow = window as any
+      if (anyWindow?.showOpenFilePicker) {
+        const [handle] = await anyWindow.showOpenFilePicker({
+          multiple: false,
+          excludeAcceptAllOption: false,
+          types: [
+            {
+              description: 'Audio files',
+              accept: {
+                'audio/*': ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac'],
+              },
+            },
+          ],
+        })
+        if (handle) {
+          const file = await handle.getFile()
+          if (file) loadFromFile(file)
+          return
+        }
+      }
+    } catch (err) {
+      // fall through to input fallback on any error/cancel
+    }
+    fileInputRef.current?.click()
+  }
+
   // Wire the audio graph for this deck
   useEffect(() => {
     if (!audioCtx || !outputNode || !audioRef.current) return
@@ -145,7 +191,7 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
       <div className="deck-header">
         <button
           className="load-btn"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={openPicker}
           aria-label="Load audio file"
         >
           Load
@@ -154,23 +200,11 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
         <input
           ref={fileInputRef}
           type="file"
-          accept="audio/mp3,audio/mpeg"
+          accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac"
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
-            // Revoke previous URL to avoid memory leaks
-            if (objectUrlRef.current) {
-              URL.revokeObjectURL(objectUrlRef.current)
-              objectUrlRef.current = null
-            }
-            const url = URL.createObjectURL(file)
-            objectUrlRef.current = url
-            const el = audioRef.current
-            if (!el) return
-            el.src = url
-            el.load()
-            setIsPlaying(false)
-            setTrackName(file.name)
+            loadFromFile(file)
           }}
           style={{ display: 'none' }}
         />
