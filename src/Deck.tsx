@@ -129,7 +129,6 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
           step={0.1}
           defaultValue={0}
           onChange={onPitchSlider}
-          orient="vertical"
           className="vertical"
         />
       </div>
