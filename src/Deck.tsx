@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { VerticalSlider } from './components/ui/VerticalSlider'
 
 export type DeckProps = {
   title: string
@@ -221,16 +222,16 @@ export function Deck({ title, audioCtx, outputNode, onLevel }: DeckProps) {
             </label>
           )
         })()}
-        <input
-          type="range"
-          min={-8}
-          max={8}
-          step={0.1}
-          defaultValue={0}
-          onChange={onPitchSlider}
-          className="vertical"
-          {...({ orient: 'vertical' } as React.HTMLAttributes<HTMLInputElement>)}
-        />
+        <div className="pitch-slider">
+          <VerticalSlider
+            min={-8}
+            max={8}
+            step={0.1}
+            value={(pitch - 1) * 100}
+            onChange={(v) => setPitch(1 + v / 100)}
+            ariaLabel="Pitch"
+          />
+        </div>
       </div>
 
       <div className="bend">
